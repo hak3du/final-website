@@ -8053,39 +8053,6 @@ function playAudio(audioId, buttonId) {
   };
 }
 
-const button = document.querySelector('.fancy-rare');
-const audio = document.getElementById('ahe-intro');
-
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-const analyser = audioCtx.createAnalyser();
-const source = audioCtx.createMediaElementSource(audio);
-source.connect(analyser);
-analyser.connect(audioCtx.destination);
-analyser.fftSize = 256;
-
-const bufferLength = analyser.frequencyBinCount;
-const dataArray = new Uint8Array(bufferLength);
-
-button.addEventListener('click', () => {
-  audio.play();
-  audioCtx.resume();
-  animateShadow(button, analyser, dataArray);
-});
-
-function animateShadow(button, analyser, dataArray) {
-  function draw() {
-    requestAnimationFrame(draw);
-    analyser.getByteFrequencyData(dataArray);
-    const volume = dataArray.reduce((a, b) => a + b) / dataArray.length;
-
-    const intensity = Math.min(volume / 2, 50);
-    button.style.boxShadow = `
-      0 0 ${intensity}px rgba(255, 0, 150, 0.6),
-      0 0 ${intensity / 2}px rgba(0, 255, 255, 0.4)
-    `;
-  }
-  draw();
-}
 
 
 fetchCyberNews();
